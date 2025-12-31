@@ -10,9 +10,9 @@ readonly GNAT_FSF_REPO="alire-project/GNAT-FSF-builds"
 readonly GITHUB_API_URL="https://api.github.com"
 readonly GITHUB_RELEASES_URL="https://github.com/${GNAT_FSF_REPO}/releases/download"
 
-# Tool name for this plugin
-readonly TOOL_NAME="ada"
-readonly TOOL_CMD="gnat"
+# Tool name for this plugin (exported for use by asdf)
+export TOOL_NAME="ada"
+export TOOL_CMD="gnat"
 
 # Colors for output (disabled if not a tty)
 if [[ -t 2 ]]; then
@@ -124,7 +124,8 @@ get_snapshot_filename() {
 # Wrapper for curl with proper headers
 curl_wrapper() {
   local url="${1}"
-  local extra_args=("${@:2}")
+  shift
+  local extra_args=("$@")
 
   local -a curl_args=(
     --silent
@@ -142,7 +143,8 @@ curl_wrapper() {
     curl_args+=(--header "Authorization: token ${GITHUB_API_TOKEN}")
   fi
 
-  curl "${curl_args[@]}" "${extra_args[@]}" "${url}"
+  # Use safe array expansion for potentially empty extra_args
+  curl "${curl_args[@]}" ${extra_args[@]+"${extra_args[@]}"} "${url}"
 }
 
 # Download a file with progress indication
