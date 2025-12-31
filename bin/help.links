@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: Useful links
+
+cat <<'EOF'
+Ada Language: https://ada-lang.io
+Ada Reference Manual: https://www.adaic.org/resources/add_content/standards/22rm/html/RM-TOC.html
+Alire Package Manager: https://alire.ada.dev
+AdaCore Community: https://www.adacore.com/community
+Learn Ada: https://learn.adacore.com
+GNAT FSF Builds: https://github.com/alire-project/GNAT-FSF-builds
+Awesome Ada: https://github.com/ohenley/awesome-ada
+Ada Forum: https://forum.ada-lang.io
+EOF

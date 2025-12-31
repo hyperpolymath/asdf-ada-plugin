@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: Plugin overview
+
+cat <<'EOF'
+Ada/GNAT is a compiled programming language designed for safety-critical
+and mission-critical systems. This plugin manages GNAT compiler versions
+from the FSF (Free Software Foundation) builds.
+
+GNAT (GNU Ada) includes:
+- gnat       : Ada compiler driver
+- gnatmake   : Build tool for Ada programs
+- gprbuild   : GPR-based project builder
+- gnatprep   : Preprocessor
+- gnatbind   : Binder for Ada units
+- gnatlink   : Linker for Ada programs
+
+For more information, see:
+- Ada language: https://ada-lang.io
+- Alire package manager: https://alire.ada.dev
+- AdaCore: https://www.adacore.com
+EOF

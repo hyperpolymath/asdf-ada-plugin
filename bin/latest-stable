@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: Get the latest stable GNAT version
+
+set -euo pipefail
+
+# Get the plugin directory
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Source utility functions
+# shellcheck source=lib/utils.bash
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+# Optional filter query (passed as first argument)
+FILTER="${1:-}"
+
+# Main
+check_dependencies
+
+latest="$(get_latest_stable)"
+
+if [[ -n "${FILTER}" ]]; then
+  # Apply filter if provided (e.g., "14" would match 14.x.x versions)
+  echo "${latest}" | grep -E "^${FILTER}" || echo "${latest}"
+else
+  echo "${latest}"
+fi

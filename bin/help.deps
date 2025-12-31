@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: System dependencies
+
+cat <<'EOF'
+System dependencies for asdf-ada:
+
+Debian/Ubuntu:
+  sudo apt-get install -y curl git build-essential libc6-dev
+
+Fedora/RHEL/CentOS:
+  sudo dnf install -y curl git gcc glibc-devel
+
+Arch Linux:
+  sudo pacman -S curl git base-devel
+
+macOS (with Homebrew):
+  brew install curl git
+  xcode-select --install
+
+Alpine Linux:
+  apk add curl git build-base libc-dev
+
+openSUSE:
+  sudo zypper install curl git gcc glibc-devel
+EOF

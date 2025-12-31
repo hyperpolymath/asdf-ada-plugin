@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: List all installable GNAT versions
+
+set -euo pipefail
+
+# Get the plugin directory
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Source utility functions
+# shellcheck source=lib/utils.bash
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+# Main
+check_dependencies
+list_all_versions
