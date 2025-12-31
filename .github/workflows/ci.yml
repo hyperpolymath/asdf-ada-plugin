@@ -21,8 +21,9 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
         with:
-          scandir: './bin'
-          additional_files: 'lib/utils.bash'
+          scandir: '.'
+          additional_files: 'bin/* lib/utils.bash'
+          severity: 'warning'
 
   test-plugin:
     name: Test Plugin (${{ matrix.os }})
@@ -86,7 +87,9 @@ jobs:
       - name: Install latest stable
         run: |
           asdf install ada ${{ steps.latest.outputs.version }}
-          asdf global ada ${{ steps.latest.outputs.version }}
+          # Use set -u for newer asdf, fallback to global for older versions
+          asdf set -u ada ${{ steps.latest.outputs.version }} 2>/dev/null || \
+            asdf global ada ${{ steps.latest.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
