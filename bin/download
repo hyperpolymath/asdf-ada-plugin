@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: Download GNAT source/binary to ASDF_DOWNLOAD_PATH
+
+set -euo pipefail
+
+# Get the plugin directory
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Source utility functions
+# shellcheck source=lib/utils.bash
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+# Environment variables provided by asdf
+# ASDF_INSTALL_TYPE: "version" or "ref"
+# ASDF_INSTALL_VERSION: the version number or git ref
+# ASDF_DOWNLOAD_PATH: where to download the source/binary
+
+download_ada() {
+  local install_type="${ASDF_INSTALL_TYPE:-version}"
+  local version="${ASDF_INSTALL_VERSION:-}"
+  local download_path="${ASDF_DOWNLOAD_PATH:-}"
+
+  if [[ -z "${version}" ]]; then
+    fail "ASDF_INSTALL_VERSION is required"
+  fi
+
+  if [[ -z "${download_path}" ]]; then
+    fail "ASDF_DOWNLOAD_PATH is required"
+  fi
+
+  if [[ "${install_type}" != "version" ]]; then
+    fail "asdf-ada only supports version installs, not refs"
+  fi
+
+  log_info "Downloading GNAT ${version} for $(get_arch)-$(get_platform)..."
+
+  # Get download URL
+  local download_url checksum_url
+  download_url="$(get_download_url "${version}")"
+  checksum_url="$(get_checksum_url "${version}")"
+
+  log_info "URL: ${download_url}"
+
+  # Create download directory
+  mkdir -p "${download_path}"
+
+  local archive_file="${download_path}/gnat.tar.gz"
+  local checksum_file="${download_path}/gnat.tar.gz.sha256"
+
+  # Download the archive
+  log_info "Downloading archive..."
+  download_file "${download_url}" "${archive_file}" || fail "Failed to download GNAT ${version}"
+
+  # Download and verify checksum (unless ASDF_ADA_SKIP_VERIFY is set)
+  if [[ "${ASDF_ADA_SKIP_VERIFY:-false}" != "true" ]]; then
+    log_info "Downloading checksum..."
+    if download_file "${checksum_url}" "${checksum_file}" 2>/dev/null; then
+      log_info "Verifying checksum..."
+      verify_checksum "${archive_file}" "${checksum_file}"
+    else
+      log_warn "Checksum file not available, skipping verification"
+    fi
+  else
+    log_warn "Skipping checksum verification (ASDF_ADA_SKIP_VERIFY=true)"
+  fi
+
+  # Extract the archive
+  log_info "Extracting archive..."
+  tar -xzf "${archive_file}" -C "${download_path}" --strip-components=1 || fail "Failed to extract archive"
+
+  # Clean up the archive
+  rm -f "${archive_file}" "${checksum_file}"
+
+  log_success "Download complete: ${download_path}"
+}
+
+# Main
+check_dependencies
+download_ada
