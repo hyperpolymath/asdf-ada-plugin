@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024 hyperpolymath
+# asdf-ada: List directories containing executables
+
+# Tell asdf which subdirectory contains the tool's binaries
+echo "bin"

@@ -217,17 +217,14 @@ list_all_versions() {
               sed -E 's/"tag_name":\s*"gnat-([^"]+)"/\1/' | \
               sort -t. -k1,1n -k2,2n -k3,3n)"
 
-  # Return space-separated list for asdf
-  echo "${versions}" | tr '\n' ' ' | sed 's/ $//'
+  # Return one version per line (asdf standard format)
+  echo "${versions}"
 }
 
 # Get the latest stable version
 get_latest_stable() {
-  local versions
-  versions="$(list_all_versions)"
-
   # Filter out snapshots and get the highest version
-  echo "${versions}" | tr ' ' '\n' | grep -v "snapshot" | sort -t. -k1,1rn -k2,2rn -k3,3rn | head -1
+  list_all_versions | grep -v "snapshot" | sort -t. -k1,1rn -k2,2rn -k3,3rn | head -1
 }
 
 # Check if a command exists
@@ -237,7 +234,7 @@ command_exists() {
 
 # Ensure required tools are available
 check_dependencies() {
-  local deps=("curl" "tar" "grep" "sed")
+  local deps=("curl" "tar" "grep" "sed" "sort" "cut" "mkdir" "rm")
   local missing=()
 
   for dep in "${deps[@]}"; do

@@ -523,6 +523,86 @@ This repository is mirrored to:
 * https://learn.adacore.com[learn.adacore.com] — Free Ada/SPARK tutorials
 * https://github.com/ohenley/awesome-ada[Awesome Ada] — Curated Ada resources
 
+== Hyperpolymath asdf Ecosystem
+
+This plugin is part of the **Hyperpolymath asdf ecosystem**, a layered architecture for managing developer tool versions.
+
+=== Ecosystem Architecture
+
+[source]
+----
+                    ┌──────────────────────────┐
+                    │  asdf-control-tower      │  ← Layer 3: Presentation
+                    │  (docs + dashboard)      │
+                    └───────────┬──────────────┘
+                                │
+┌──────────────────────────┐    │    ┌──────────────────────────┐
+│ asdf-ui-plugin           │────┼────│ asdf-plugin-configurator │  ← Layer 2–3
+│ (visual UX; planned)     │    │    │ (Rust CLI; config/policy)│
+└──────────────────────────┘    │    └──────────────────────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │ asdf-metaiconic-plugin│  ← Layer 1: Registry
+                    │ (registry + schema)   │
+                    └───────────┬───────────┘
+                                │
+     ┌────────────────────────────────────────────────┐
+     │  Individual asdf tool plugins (Layer 5)        │
+     │                                                │
+     │  ★ asdf-ada-plugin  ← YOU ARE HERE             │
+     │    asdf-neo4j-plugin                           │
+     │    asdf-ghjk                                   │
+     │    …(68+ installable plugins)                  │
+     └────────────────────────────────────────────────┘
+----
+
+=== Layer Descriptions
+
+[cols="1,2,4"]
+|===
+|Layer |Component |Purpose
+
+|**Layer 0**
+|Infrastructure Spine
+|Multi-forge mirroring, instant-sync, policy constraints (`.claude/CLAUDE.md`), community docs — present across all repos
+
+|**Layer 1**
+|https://github.com/hyperpolymath/asdf-metaiconic-plugin[asdf-metaiconic-plugin]
+|Canonical metadata registry: `registry/plugins.yaml`, category definitions, quality metrics, icon/branding standards
+
+|**Layer 2**
+|https://github.com/hyperpolymath/asdf-plugin-configurator[asdf-plugin-configurator]
+|Rust CLI for declarative plugin configuration — apply policy to machines/projects, consume registry for validation
+
+|**Layer 3**
+|https://github.com/hyperpolymath/asdf-control-tower[asdf-control-tower] + https://github.com/hyperpolymath/asdf-ui-plugin[asdf-ui-plugin]
+|Human-facing dashboard, documentation hub, visual discovery UI (planned)
+
+|**Layer 4**
+|Domain Collections
+|Category "umbrella" plugins (e.g., `asdf-security-plugin` for curated security toolsets)
+
+|**Layer 5**
+|**Tool Plugins** ★
+|**Actual installable units** — implements `bin/list-all`, `bin/download`, `bin/install`, `bin/latest-stable`. This repo (`asdf-ada-plugin`) lives here.
+|===
+
+=== This Plugin's Role
+
+`asdf-ada-plugin` is a **Layer 5 tool plugin** — the actual "workhorse" that asdf uses to install and manage Ada/GNAT compiler versions. It:
+
+* Implements the asdf plugin contract (`bin/list-all`, `bin/download`, `bin/install`, `bin/latest-stable`)
+* Fetches releases from the https://github.com/alire-project/GNAT-FSF-builds[GNAT-FSF-builds] upstream
+* Provides checksum verification, multi-platform support, and robust error handling
+* Is indexed by `asdf-metaiconic-plugin` for ecosystem-wide discovery
+* Can be configured via `asdf-plugin-configurator` for team/project consistency
+
+=== Ecosystem Links
+
+* https://github.com/hyperpolymath/asdf-control-tower[asdf-control-tower] — Ecosystem documentation hub
+* https://github.com/hyperpolymath/asdf-metaiconic-plugin[asdf-metaiconic-plugin] — Plugin registry and metadata
+* https://github.com/hyperpolymath/asdf-plugin-configurator[asdf-plugin-configurator] — Policy enforcement CLI
+
 == License
 
 This project is licensed under the GNU Affero General Public License v3.0 or later.
