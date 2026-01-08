@@ -18,11 +18,11 @@ FILTER="${1:-}"
 # Main
 check_dependencies
 
-latest="$(get_latest_stable)"
-
 if [[ -n "${FILTER}" ]]; then
-  # Apply filter if provided (e.g., "14" would match 14.x.x versions)
-  echo "${latest}" | grep -E "^${FILTER}" || echo "${latest}"
+  # Apply filter BEFORE selecting latest (e.g., "14" matches 14.x.x versions)
+  # Get all versions, filter by prefix, exclude snapshots, sort descending, take first
+  list_all_versions | tr ' ' '\n' | grep -E "^${FILTER}" | grep -v "snapshot" | \
+    sort -t. -k1,1rn -k2,2rn -k3,3rn | head -1
 else
-  echo "${latest}"
+  get_latest_stable
 fi
