@@ -1,13 +1,13 @@
 ;; SPDX-License-Identifier: AGPL-3.0-or-later
-;; NEUROSYM.scm - Neurosymbolic integration config
+;; NEUROSYM.scm - Neurosymbolic integration configuration
 
-(define neurosym-config
-  `((version . "1.0.0")
-    (symbolic-layer
-      ((type . "scheme")
-       (reasoning . "deductive")
-       (verification . "formal")))
-    (neural-layer
-      ((embeddings . false)
-       (fine-tuning . false)))
-    (integration . ())))
+(neurosym
+  (version "1.0.0")
+
+  (symbolic-layer
+    (purpose "structured plugin configuration")
+    (formats "scm" "toml"))
+
+  (neural-layer
+    (purpose "code generation assistance")
+    (model "claude")))

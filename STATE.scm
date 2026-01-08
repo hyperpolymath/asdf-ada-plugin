@@ -1,50 +1,48 @@
-;; STATE.scm - RSR State File
 ;; SPDX-License-Identifier: AGPL-3.0-or-later
-;; Copyright (C) 2025 Jonathan D.A. Jewell
-;;
-;; This file tracks the current state of the project using S-expressions.
-;; It is machine-readable and used by RSR tooling for validation.
+;; STATE.scm - Current project state
 
 (state
-  (version . "0.1.0")
-  (phase . "alpha")
-  (updated . "2025-12-27T00:00:00Z")
+  (metadata
+    (version "1.0.0")
+    (schema-version "1.0")
+    (created "2026-01-08")
+    (updated "2026-01-08")
+    (project "asdf-ada-plugin")
+    (repo "https://github.com/hyperpolymath/asdf-ada-plugin"))
 
-  (project
-    (name . "asdf-ada-plugin")
-    (tier . "infrastructure")
-    (license . "AGPL-3.0-or-later")
-    (language . "ada"))
+  (project-context
+    (name "asdf-ada-plugin")
+    (tagline "asdf plugin for Ada/GNAT compiler")
+    (tech-stack "bash" "shellcheck"))
 
-  (compliance
-    (rsr . #t)
-    (security-hardened . #t)
-    (ci-cd . #t)
-    (guix-primary . #f)
-    (nix-fallback . #f))
+  (current-position
+    (phase "active")
+    (overall-completion 80)
+    (components
+      (list-all "complete")
+      (download "complete")
+      (install "complete")
+      (help "complete"))
+    (working-features
+      "version listing"
+      "binary download"
+      "installation"
+      "version switching"))
 
-  (artifacts
-    (binary . "bin/asdf-ada-plugin")
-    (container . "ghcr.io/hyperpolymath/asdf-ada-plugin:latest"))
+  (route-to-mvp
+    (milestone "1.0"
+      (items
+        "Core plugin functionality"
+        "CI/CD pipeline"
+        "Documentation")))
 
-  (dependencies
-    (build
-      ("gnat" . ">=12")
-      ("gprbuild" . ">=22"))
-    (runtime))
+  (blockers-and-issues
+    (critical)
+    (high)
+    (medium)
+    (low))
 
-  (milestones
-    (v0.1.0
-      (status . "released")
-      (date . "2025-12-27")
-      (features
-        "Task runner"
-        "Template engine"
-        "Requirements enforcer"
-        "Deploy command"))
-    (v0.2.0
-      (status . "planned")
-      (features
-        "Mustache partials"
-        "Content requirement checks"
-        "TOML variable loading"))))
+  (critical-next-actions
+    (immediate)
+    (this-week)
+    (this-month)))

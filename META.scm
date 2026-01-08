@@ -1,14 +1,25 @@
 ;; SPDX-License-Identifier: AGPL-3.0-or-later
-;; META.scm - Project metadata and architectural decisions
+;; META.scm - Meta-level project information
 
-(define project-meta
-  `((version . "1.0.0")
-    (architecture-decisions . ())
-    (development-practices
-      ((code-style . "rescript")
-       (security . "openssf-scorecard")
-       (testing . "property-based")
-       (versioning . "semver")
-       (documentation . "asciidoc")
-       (branching . "trunk-based")))
-    (design-rationale . ())))
+(meta
+  (version "1.0.0")
+
+  (architecture-decisions)
+
+  (development-practices
+    (code-style
+      (shell "shellcheck" "shfmt")
+      (documentation "asciidoc"))
+    (security
+      (scanning "trufflehog" "gitleaks")
+      (scorecard "enabled"))
+    (testing
+      (framework "asdf-plugin-test")
+      (ci-platforms "github-actions"))
+    (versioning "semver")
+    (documentation "README.adoc")
+    (branching "trunk-based"))
+
+  (design-rationale
+    (why-asdf "Universal version manager with plugin ecosystem")
+    (why-ada "Ada/GNAT compiler")))
