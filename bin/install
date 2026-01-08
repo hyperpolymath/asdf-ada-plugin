@@ -60,13 +60,9 @@ install_ada() {
   # The GNAT FSF builds are pre-compiled, just copy files
   log_info "Copying files to ${install_path}..."
 
-  # Copy all contents from download to install path
-  if [[ -d "${download_path}/bin" ]]; then
-    cp -r "${download_path}"/* "${install_path}/" || fail "Failed to copy files"
-  else
-    # Some archives may have a different structure
-    cp -r "${download_path}"/* "${install_path}/" || fail "Failed to copy files"
-  fi
+  # Copy all contents from download to install path (cp -a preserves permissions)
+  # Using "/." instead of "/*" to include hidden files
+  cp -a "${download_path}/." "${install_path}/" || fail "Failed to copy files"
 
   # Clean up temp download if we created it
   if [[ -d "${install_path}/tmp_download" ]]; then
