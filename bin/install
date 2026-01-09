@@ -1,91 +1,11 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# Copyright (c) 2024 hyperpolymath
-# asdf-ada: Install GNAT to ASDF_INSTALL_PATH
-
 set -euo pipefail
 
-# Get the plugin directory
-PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+current_script_path="${BASH_SOURCE[0]}"
+plugin_dir="$(dirname "$(dirname "$current_script_path")")"
 
-# Source utility functions
-# shellcheck source=lib/utils.bash
-source "${PLUGIN_DIR}/lib/utils.bash"
+# shellcheck source=../lib/utils.bash
+source "$plugin_dir/lib/utils.bash"
 
-# Environment variables provided by asdf
-# ASDF_INSTALL_TYPE: "version" or "ref"
-# ASDF_INSTALL_VERSION: the version number or git ref
-# ASDF_INSTALL_PATH: where to install the tool
-# ASDF_DOWNLOAD_PATH: where the source/binary was downloaded (if bin/download exists)
-# ASDF_CONCURRENCY: number of cores to use for compilation
-
-install_ada() {
-  local install_type="${ASDF_INSTALL_TYPE:-version}"
-  local version="${ASDF_INSTALL_VERSION:-}"
-  local install_path="${ASDF_INSTALL_PATH:-}"
-  local download_path="${ASDF_DOWNLOAD_PATH:-}"
-
-  if [[ -z "${version}" ]]; then
-    fail "ASDF_INSTALL_VERSION is required"
-  fi
-
-  if [[ -z "${install_path}" ]]; then
-    fail "ASDF_INSTALL_PATH is required"
-  fi
-
-  if [[ "${install_type}" != "version" ]]; then
-    fail "asdf-ada only supports version installs, not refs"
-  fi
-
-  log_info "Installing GNAT ${version}..."
-
-  # If download_path is not set or empty, download here (for older asdf versions)
-  if [[ -z "${download_path}" ]] || [[ ! -d "${download_path}" ]]; then
-    download_path="${install_path}/tmp_download"
-    mkdir -p "${download_path}"
-
-    log_info "Downloading GNAT ${version}..."
-    local download_url archive_file
-    download_url="$(get_download_url "${version}")"
-    archive_file="${download_path}/gnat.tar.gz"
-
-    download_file "${download_url}" "${archive_file}" || fail "Failed to download GNAT ${version}"
-    tar -xzf "${archive_file}" -C "${download_path}" --strip-components=1 || fail "Failed to extract archive"
-    rm -f "${archive_file}"
-  fi
-
-  # Create the install directory
-  mkdir -p "${install_path}"
-
-  # The GNAT FSF builds are pre-compiled, just copy files
-  log_info "Copying files to ${install_path}..."
-
-  # Copy all contents from download to install path (cp -a preserves permissions)
-  # Using "/." instead of "/*" to include hidden files
-  cp -a "${download_path}/." "${install_path}/" || fail "Failed to copy files"
-
-  # Clean up temp download if we created it
-  if [[ -d "${install_path}/tmp_download" ]]; then
-    rm -rf "${install_path}/tmp_download"
-  fi
-
-  # Verify installation
-  local gnat_path="${install_path}/bin/gnat"
-  local gnatmake_path="${install_path}/bin/gnatmake"
-
-  if [[ ! -x "${gnat_path}" ]] && [[ ! -x "${gnatmake_path}" ]]; then
-    fail "Installation failed: gnat/gnatmake not found in ${install_path}/bin"
-  fi
-
-  log_success "GNAT ${version} installed successfully to ${install_path}"
-
-  # Show version info
-  if [[ -x "${install_path}/bin/gnatmake" ]]; then
-    log_info "Installed version:"
-    "${install_path}/bin/gnatmake" --version 2>&1 | head -1 || true
-  fi
-}
-
-# Main
-check_dependencies
-install_ada
+install_version "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
